@@ -1,7 +1,7 @@
 from celery import current_app as current_celery_app
 from celery.result import AsyncResult
 
-from .celery_config import settings
+from .config import settings
 
 
 def create_celery():

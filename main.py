@@ -4,7 +4,7 @@ import uvicorn as uvicorn
 from dynaconf import Dynaconf
 from fastapi import FastAPI
 
-from config.celery_utils import create_celery
+from celeryworker.utils import create_celery
 from routers import pidresolution
 
 

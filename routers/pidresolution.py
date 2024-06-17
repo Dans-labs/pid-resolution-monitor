@@ -4,8 +4,8 @@ from fastapi import APIRouter
 from starlette.responses import JSONResponse
 
 from api import pidresolver
-from celery_tasks.tasks import resolve_pid_task, resolve_all_pids_task, save_pidmr_event_task
-from config.celery_utils import get_task_info
+from celeryworker.tasks import resolve_pid_task, resolve_all_pids_task, save_pidmr_event_task
+from celeryworker.utils import get_task_info
 from schemas.schemas import PIDMRRootSchema, Pid
 
 router = APIRouter(responses={404: {"description": "Not found"}})
