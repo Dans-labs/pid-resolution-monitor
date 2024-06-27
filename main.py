@@ -1,19 +1,39 @@
 import time
+from contextlib import asynccontextmanager
 
+import emoji
 import uvicorn as uvicorn
-from dynaconf import Dynaconf
 from fastapi import FastAPI
+from starlette.middleware.cors import CORSMiddleware
 
 from celeryworker.utils import create_celery
-from routers import pidresolution
+from database import models
+from database.database import engine
+from routers import pidresolution, pidmr
+from settings import settings
+
+
+@asynccontextmanager
+async def lifespan(application: FastAPI):
+    models.Base.metadata.create_all(bind=engine)
+    print(f'Created DB metadata...{emoji.emojize(':high_voltage:')}')
+    yield  # before the yield, will be executed before the application starts
+    print(f'Stopping DB connectionpool...{emoji.emojize(':bomb:')}')
 
 
 def create_app() -> FastAPI:
-    settings = Dynaconf(settings_files=["config/settings.toml"], secrets=["config/.secrets.toml"], environments=True, default_env="default", load_dotenv=True)
-    current_app = FastAPI(title=settings.fastapi_title, description=settings.fastapi_description, version=settings.fastapi_version, )
+    current_app = FastAPI(title=settings.fastapi_title, description=settings.fastapi_description, version=settings.fastapi_version, lifespan=lifespan)
 
+    current_app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
     current_app.celery_app = create_celery()
     current_app.include_router(pidresolution.router)
+    current_app.include_router(pidmr.router)
     return current_app
 
 

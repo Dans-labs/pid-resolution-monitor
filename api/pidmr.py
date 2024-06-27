@@ -1,19 +1,5 @@
-from schemas.schemas import PIDMRRootSchema
+from schemas.schemas import PIDMResolutionEvent
 
-
-def save_pidmr_event(event: PIDMRRootSchema) -> dict:
+def save_pidmr_event(event: PIDMResolutionEvent) -> dict:
     # TODO: implement
-    return {event.content.id}
-
-# from schemas.schemas import University
-# def get_all_universities_for_country(country: str) -> dict:
-#     print('get_all_universities_for_country ', country)
-#     params = {'country': country}
-#     client = httpx.Client()
-#     response = client.get("http://universities.hipolabs.com/search", params=params)
-#     response_json = json.loads(response.text)
-#     universities = []
-#     for university in response_json:
-#         university_obj = University.parse_obj(university)
-#         universities.append(university_obj)
-#     return {country: universities}
+    return {"Event":event.pid_id}

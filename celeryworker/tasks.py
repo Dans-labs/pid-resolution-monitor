@@ -3,11 +3,11 @@ from typing import List
 from celery import shared_task
 
 from api import pidresolver, pidmr
-from schemas.schemas import PIDMRRootSchema
+from schemas.schemas import PIDMResolutionEvent
 
 
 @shared_task(bind=True, autoretry_for=(Exception,), retry_backoff=True, retry_kwargs={"max_retries": 5}, name='pidmr:save_pidmr_event_task')
-def save_pidmr_event_task(self, event: PIDMRRootSchema):
+def save_pidmr_event_task(self, event: PIDMResolutionEvent):
     store_result = pidmr.save_pidmr_event(event)
     return store_result
 
