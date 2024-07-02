@@ -1,5 +1,4 @@
 from celery import group
-from dynaconf import Dynaconf
 from fastapi import APIRouter
 from starlette.responses import JSONResponse
 
@@ -11,8 +10,7 @@ from settings import settings
 
 router = APIRouter(responses={404: {"description": "Not found"}}, tags=["PID Resolution"])
 
-MAX_CELERY_GROUP_SIZE = settings.MAX_CELERY_GROUP_SIZE
-
+MAX_CELERY_GROUP_SIZE = settings.CELERY_MAX_GROUP_SIZE
 
 @router.post("/pid/")
 def get_pid_status_codes(pid: Pid) -> dict:
@@ -30,7 +28,6 @@ async def get_status_codes(pid: Pid) -> dict:
     """
     This uses Celery to perform subtasks in a parallel manner. For each Celey canvas group it creates, it creates one task, that should be picked up by a worker.
     """
-
     subpidlists = [pid.pids[i:i + MAX_CELERY_GROUP_SIZE] for i in range(0, len(pid.pids), MAX_CELERY_GROUP_SIZE)]
 
     for groupchunk in subpidlists:
@@ -49,9 +46,9 @@ async def get_status_codes(pid: Pid) -> dict:
     return result
 
 
-# This endpoint creates one task for all provided PIDs. It is picked up by only ONE worker...
 @router.post("/pid/async")
 async def get_status_codes_async(pid: Pid):
+    """Creates one task for all provided PIDs. It is picked up by only ONE worker..."""
     task_result = resolve_all_pids_task.apply_async(args=[pid.pids])
     return JSONResponse({"task_id": task_result.id})
 
@@ -59,6 +56,6 @@ async def get_status_codes_async(pid: Pid):
 @router.get("/task/{task_id}", tags=["Celery"])
 async def get_task_status(task_id: str) -> dict:
     """
-    Return the status of a submitted TaskId
+    Return the status of a Celery TaskId
     """
     return get_task_info(task_id)

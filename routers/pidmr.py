@@ -1,4 +1,3 @@
-from dynaconf import Dynaconf
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -11,6 +10,7 @@ router = APIRouter(
     tags=["PIDMR"],
     responses={404: {"description": "Not found"}},
 )
+
 
 @router.post("/event")
 def create_event(event: schemas.PIDMResolutionEvent, db: Session = Depends(get_db)):

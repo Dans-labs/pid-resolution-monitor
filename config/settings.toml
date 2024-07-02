@@ -6,7 +6,13 @@ fastapi_version = "0.1.0"
 fastapi_summary = ""
 loggers = [{ "name" = "prm", "log_file" = "../../logs/prm.log", "log_level" = 10, "log_format" = "%(asctime)s %(levelname)s: %(message)s", "log_date_format" = "%Y-%m-%d %H:%M:%S" }]
 #log_file = "@format {env[BASE_DIR]}/logs/prm.log"
-max_celery_group_size = 5
+pyproject_toml_path = '../pyproject.toml'
+
+pidresolver_max_redir = 15
+pidresolver_user_agent = "@format {this.fastapi_title}/{this.fastapi_version}"
+pidresolver_timeout = 10
+
+celery_max_group_size = 8
 
 [development]
 dynaconf_env = "DEVELOPMENT"

@@ -30,7 +30,7 @@ sqlalchemy = "^2.0.31"
 sqlmodel = "^0.0.19"
 asyncpg = "^0.29.0"
 psycopg2-binary = "^2.9.9"
-alembic = "^1.7.3
+alembic = "^1.7.3"
 
 [build-system]
 requires = ["poetry-core"]
