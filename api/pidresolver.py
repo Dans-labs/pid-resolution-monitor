@@ -7,7 +7,6 @@ from pydantic import BaseModel
 
 from settings import settings
 
-
 class ResolutionRecord(BaseModel):
     time_stamp: datetime
     pid_id: str
@@ -17,7 +16,6 @@ class ResolutionRecord(BaseModel):
     redirect_count: Optional[int]
     resolution_url: Optional[str]
     http_error: Optional[str]
-
 
 def get_resolved_pid_status_code(pid: str) -> Optional[ResolutionRecord]:
     """Resolve a persistent identifier (PID) and return a ResolutionRecord object with information about the resolution process."""
@@ -32,29 +30,20 @@ def get_resolved_pid_status_code(pid: str) -> Optional[ResolutionRecord]:
         pidx = pidx.replace("http:", "https:")
 
     respons, verified, error = resolve_pid(pidx, True)
-    if respons is None:
-        return ResolutionRecord(
-            time_stamp=datetime.now(),
-            pid_id=pid,
-            pid_url=pidx,
-            status_code=None,
-            ssl_verified=verified,
-            redirect_count=None,
-            resolution_url=None,
-            http_error=str(error)
-        )
+    return create_resolution_record(pid, pidx, respons, verified, error)
 
+def create_resolution_record(pid: str, pidx: str, response: Optional[httpx.Response], verified: bool, error: Optional[str]) -> ResolutionRecord:
+    """Create a ResolutionRecord based on the PID resolution response."""
     return ResolutionRecord(
         time_stamp=datetime.now(),
         pid_id=pid,
         pid_url=pidx,
-        status_code=respons.status_code,
+        status_code=response.status_code if response else None,
         ssl_verified=verified,
-        redirect_count=len(respons.history),
-        resolution_url=str(respons.url),
-        http_error=None
+        redirect_count=len(response.history) if response else None,
+        resolution_url=str(response.url) if response else None,
+        http_error=str(error) if response is None else None
     )
-
 
 def resolve_pid(pid: str, verify: bool) -> tuple[Optional[httpx.Response], bool, Optional[str]]:
     """Attempt to resolve the PID with HTTP requests, following redirects and verifying SSL."""
