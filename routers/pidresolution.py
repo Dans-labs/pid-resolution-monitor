@@ -12,6 +12,7 @@ router = APIRouter(responses={404: {"description": "Not found"}}, tags=["PID Res
 
 MAX_CELERY_GROUP_SIZE = settings.CELERY_MAX_GROUP_SIZE
 
+
 @router.post("/pid/")
 def get_pid_status_codes(pid: Pid) -> dict:
     """
@@ -19,7 +20,7 @@ def get_pid_status_codes(pid: Pid) -> dict:
     """
     data: dict = {}
     for pidx in pid.pids:
-        data.update(pidresolver.get_resolved_pid_status_code(pidx))
+        data.update(pidresolver.get_resolved_pid_record(pidx))
     return data
 
 

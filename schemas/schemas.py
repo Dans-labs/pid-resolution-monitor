@@ -32,7 +32,7 @@ class PIDMResolutionRecord(BaseModel):
     time_stamp: datetime
     pid_id: str
     pid_url: str
-    status_code : str
+    status_code: str
     ssl_verified: bool
     redirect_count: int
     resolution_url: str
