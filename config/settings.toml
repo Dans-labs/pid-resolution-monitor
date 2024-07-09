@@ -10,7 +10,9 @@ pyproject_toml_path = '../pyproject.toml'
 
 pidresolver_max_redir = 15
 pidresolver_user_agent = "@format {this.fastapi_title}/{this.fastapi_version}"
-pidresolver_timeout = 10
+
+pidresolver_timeout = 15
+pidresolver_read_timeout = 60
 
 celery_max_group_size = 8
 

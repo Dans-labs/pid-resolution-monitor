@@ -58,7 +58,7 @@ def resolve_pid(pid: str, verify: bool) -> tuple[Optional[httpx.Response], bool,
     # https://www.python-httpx.org/advanced/timeouts/
     # There are four different types of timeouts that may occur. These are connect, read, write, and pool timeouts.
     # The default behavior is to raise a TimeoutException after 5 seconds of network inactivity.
-    client = httpx.Client(follow_redirects=True, timeout=httpx.Timeout(settings.PIDRESOLVER_TIMEOUT), verify=verify,
+    client = httpx.Client(follow_redirects=True, timeout=httpx.Timeout(settings.PIDRESOLVER_TIMEOUT, read=settings.PIDRESOLVER_READ_TIMEOUT), verify=verify,
                           max_redirects=settings.PIDRESOLVER_MAX_REDIR,
                           headers={"user-agent": settings.PIDRESOLVER_USER_AGENT})
     try:
