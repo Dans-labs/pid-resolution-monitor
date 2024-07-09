@@ -6,7 +6,7 @@ from .database import Base
 
 
 class MonitorRecord(Base):
-    __tablename__ = "monitor_records"
+    __tablename__ = "pid_resolution"
     id = Column(Integer, primary_key=True)
     time_stamp = Column(DateTime, nullable=False, default=datetime.now)
     pid_id = Column(String, nullable=False)  # pid of the record
@@ -23,5 +23,6 @@ class PIDMREvent(Base):
     id = Column(Integer, primary_key=True)
     time_stamp = Column(DateTime, nullable=False, default=datetime.now)
     pid_id = Column(String, nullable=False)
-    pid_type = Column(String, nullable=False)
+    pid_mode = Column(String, nullable=False)
+    pid_type = Column(String, nullable=True)
     pid_endpoint = Column(String, nullable=False)

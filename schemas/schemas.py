@@ -16,12 +16,14 @@ class Pid(BaseModel):
 class PIDMResolutionEvent(BaseModel):
     time_stamp: datetime
     pid_id: str
+    pid_mode: str
     pid_type: str
     pid_endpoint: str
     model_config = ConfigDict(json_schema_extra={
         "example": {
             "time_stamp": "2022-01-01T00:00:00",
             "pid_id": "10.5281/zenodo.4672413",
+            "pid_mode": "landingpage",
             "pid_type": "doi",
             "pid_endpoint": "https://doi.org/10.5281/zenodo.4672413"
         }

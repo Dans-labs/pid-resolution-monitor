@@ -6,7 +6,7 @@ from .models import PIDMREvent, MonitorRecord
 
 
 def create_pidmr_event(db: Session, event: schemas.PIDMResolutionEvent):
-    db_event = PIDMREvent(time_stamp=event.time_stamp, pid_id=event.pid_id, pid_type=event.pid_type,
+    db_event = PIDMREvent(time_stamp=event.time_stamp, pid_id=event.pid_id, pid_mode=event.pid_mode, pid_type=event.pid_type,
                           pid_endpoint=event.pid_endpoint)
     db.add(db_event)
     db.commit()
