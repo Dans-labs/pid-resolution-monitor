@@ -7,6 +7,7 @@ Dependencies will be installed by Poetry
 ### Prerequisite
 1. Python 
 2. RabbitMQ instance
+3. (postgres) DB instance
 
 ### Run the Application
 
@@ -14,13 +15,17 @@ Dependencies will be installed by Poetry
 ```
 $ docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.13-management
 ```
-2. Run the main app:
+2. Start a Docker Postgres container:
+```
+$ docker run --name pidresolution -e POSTGRES_PASSWORD=<<pwd>> -e POSTGRES_USER=<<user>> -d -p 5432:5432 postgres
+```
+3. Run the main app:
 ```
 $ python main.py
 ```
 3. Start the Celery process, navigate to the project directory in a new terminal, activate the virtual environment, and then run:
 ```
-$ celery -A main.celery worker -l INFO -Q pid-resolution,pidmr --autoscale=1,10
+$ celery -A main.celery worker -l INFO -Q pid-resolution,pidmr,celery --autoscale=1,10
 ```
 Or start Celery with other options:
 ```
@@ -37,9 +42,8 @@ Once the Flower starts we can see the submitted tasks at <http://localhost:5555/
 
 ### Test the application
 
-Visit http://127.0.0.1:9000/docs to see the API documentation provided by [Swagger UI](https://github.com/swagger-api/swagger-ui)
+Visit http://localhost:9000/docs to see the API documentation provided by [Swagger UI](https://github.com/swagger-api/swagger-ui)
 
-The server will start at <http://localhost:9000/docs>.
 
 ### References
 * [Async Architecture with FastAPI, Celery, and RabbitMQ ](https://dassum.medium.com/async-architecture-with-fastapi-celery-and-rabbitmq-c7d029030377)

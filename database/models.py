@@ -23,6 +23,6 @@ class PIDMREvent(Base):
     id = Column(Integer, primary_key=True)
     time_stamp = Column(DateTime, nullable=False, default=datetime.now)
     pid_id = Column(String, nullable=False)
-    pid_mode = Column(String, nullable=False)
+    pid_mode = Column(String, nullable=False) #landingpage, metadata or resource
     pid_type = Column(String, nullable=True)
     pid_endpoint = Column(String, nullable=False)

@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from starlette.responses import JSONResponse
 
 from api import pidresolver
-from celeryworker.tasks import resolve_pid_task, resolve_all_pids_task
+from celeryworker.tasks import resolve_all_pids_task, resolve_pid_task
 from celeryworker.utils import get_task_info
 from schemas.schemas import Pid
 from settings import settings
@@ -19,15 +19,15 @@ def get_pid_status_codes(pid: Pid) -> dict:
     Return the List of HTTP response codes in a sync way
     """
     data: dict = {}
-    for pidx in pid.pids:
-        data.update(pidresolver.get_resolved_pid_record(pidx))
+    for pid in pid.pids:
+        data.update(pidresolver.resolve_url_by_pid(pid))
     return data
 
 
 @router.post("/pid/parallel")
 async def get_status_codes(pid: Pid) -> dict:
     """
-    This uses Celery to perform subtasks in a parallel manner. For each Celey canvas group it creates, it creates one task, that should be picked up by a worker.
+    This uses Celery to perform subtasks in a parallel manner. For each Celery canvas group it creates, it creates one task, that should be picked up by a worker.
     """
     subpidlists = [pid.pids[i:i + MAX_CELERY_GROUP_SIZE] for i in range(0, len(pid.pids), MAX_CELERY_GROUP_SIZE)]
 
