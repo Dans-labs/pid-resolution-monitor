@@ -20,9 +20,6 @@ def save_pidmr_event_task(self, event: PIDMResolutionEvent):
 
 class BaseResolutionTask(Task):
     def on_failure(self, exc, task_id, args, kwargs, einfo):
-        # print(
-        #     f'ONFAILURE Task {task_id} failed: {exc}. Args: {args}, Kwargs: {kwargs}, Retries: {self.request.retries}')
-        # last attempt failed: Add PID to the database as unresolvable:
         rr = pidresolver.create_resolution_record(
             args[0],
             pidresolver.get_actionable_pid_url(args[0]),
@@ -50,7 +47,7 @@ def resolve_pid_task(self, pid: str):
         # print(f"PID {pid} resolution failed. retries: {self.request.retries}/{self.max_retries}, Error: {e}.")
         logger.debug(f"PID {pid} resolution failed. retries: {self.request.retries}/{self.max_retries}, Error: {e}.")
         base_eta = datetime.now(timezone.utc) + timedelta(hours=24)
-        jitter_seconds = random.randint(-3600, 3600)  # +/- 3600 seconds (1 hour)
+        jitter_seconds = random.randint(-3600, 3600)
         jittered_eta = base_eta + timedelta(seconds=jitter_seconds)
         raise self.retry(exc=e, queue='celery', max_retries=1, eta=jittered_eta)
 

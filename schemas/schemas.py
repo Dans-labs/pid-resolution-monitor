@@ -1,7 +1,15 @@
 from datetime import datetime
+from enum import StrEnum, unique, auto
 from typing import List
 
 from pydantic import ConfigDict, BaseModel
+
+
+@unique
+class PIDMODE(StrEnum):
+    LANDINGPAGE = "landingpage"
+    METADATA = "metadata"
+    RESOURCE = "resource"
 
 
 class Pid(BaseModel):
@@ -16,14 +24,14 @@ class Pid(BaseModel):
 class PIDMResolutionEvent(BaseModel):
     time_stamp: datetime
     pid_id: str
-    pid_mode: str
+    pid_mode: PIDMODE
     pid_type: str
     pid_endpoint: str
     model_config = ConfigDict(json_schema_extra={
         "example": {
             "time_stamp": "2022-01-01T00:00:00",
             "pid_id": "10.5281/zenodo.4672413",
-            "pid_mode": "landingpage",
+            "pid_mode": PIDMODE.LANDINGPAGE.value,
             "pid_type": "doi",
             "pid_endpoint": "https://doi.org/10.5281/zenodo.4672413"
         }
@@ -50,5 +58,27 @@ class PIDMResolutionRecord(BaseModel):
             "redirect_count": 4,
             "resolution_url": "https://iris.unige.it//handle/11567/941700",
             "http_error": "None"
+        }
+    })
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: str | None = None
+
+
+class User(BaseModel):
+    username: str
+    disabled: bool | None = None
+    timestamp: datetime
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "username": "janedoe",
+            "disabled": False,
+            "timestamp": "2024-07-30 00:00:00"
         }
     })

@@ -9,7 +9,7 @@ from starlette.middleware.cors import CORSMiddleware
 from celeryworker.utils import create_celery
 from database import models
 from database.database import engine
-from routers import pidresolution, pidmr
+from routers import pidresolution, pidmr, users
 from settings import settings
 
 
@@ -22,11 +22,14 @@ async def lifespan(application: FastAPI):
 
 
 def create_app() -> FastAPI:
-    current_app = FastAPI(title=settings.fastapi_title, description=settings.fastapi_description, version=settings.fastapi_version, lifespan=lifespan)
+    current_app = FastAPI(title=settings.fastapi_title, description=settings.fastapi_description,
+                          version=settings.fastapi_version, lifespan=lifespan)
+
+    origins = ["*"]
 
     current_app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -34,6 +37,7 @@ def create_app() -> FastAPI:
     current_app.celery_app = create_celery()
     current_app.include_router(pidresolution.router)
     current_app.include_router(pidmr.router)
+    current_app.include_router(users.router)
     return current_app
 
 

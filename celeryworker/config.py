@@ -23,7 +23,6 @@ class BaseConfig:
 
     # These queues will all be created if the celey worker was not started with the -Q option:
     CELERY_TASK_QUEUES: list = (
-
         Queue("celery"),  # default queue
         # custom queues:
         Queue("pidmr"),

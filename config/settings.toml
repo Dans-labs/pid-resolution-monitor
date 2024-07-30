@@ -16,6 +16,8 @@ pidresolver_read_timeout = 60
 
 celery_max_group_size = 8
 
+jwt_token_expire_min = 11520
+
 [development]
 dynaconf_env = "DEVELOPMENT"
 

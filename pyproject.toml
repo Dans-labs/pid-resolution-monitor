@@ -31,6 +31,8 @@ sqlmodel = "^0.0.19"
 asyncpg = "^0.29.0"
 psycopg2-binary = "^2.9.9"
 alembic = "^1.7.3"
+pyjwt = "^2.8.0"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 
 [build-system]
 requires = ["poetry-core"]
