@@ -1,4 +1,5 @@
 [default]
+
 dynaconf_env = "DEFAULT"
 fastapi_title = "PID Resolution Monitor"
 fastapi_description = "Rest API to register PIDMR resolution events."

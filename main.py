@@ -16,9 +16,9 @@ from settings import settings
 @asynccontextmanager
 async def lifespan(application: FastAPI):
     models.Base.metadata.create_all(bind=engine)
-    print(f'Created DB metadata...{emoji.emojize(':high_voltage:')}')
+    print(f"Created DB metadata...{emoji.emojize(':high_voltage:')}")
     yield  # before the yield, will be executed before the application starts
-    print(f'Stopping DB connectionpool...{emoji.emojize(':bomb:')}')
+    print(f"Stopping DB connectionpool...{emoji.emojize(':bomb:')}")
 
 
 def create_app() -> FastAPI:
