@@ -31,7 +31,7 @@ class BaseResolutionTask(Task):
         logger.warn(f"'{args[0]}' unresolvable after {self.request.retries}/{self.max_retries} retries. Error: {exc}")
 
     def on_success(self, retval, task_id, args, kwargs):
-        logger.info(f'ONSUCCESS Task {task_id} succeeded. Result: {retval}')
+        logger.info(f'Task {task_id} succeeded: {retval.pid_url} => {retval.resolution_url} (HTTP {retval.status_code})')
 
 
 @shared_task(bind=True, autoretry_for=(httpx.HTTPError,), name='pid-resolution:resolve_pid_task',
