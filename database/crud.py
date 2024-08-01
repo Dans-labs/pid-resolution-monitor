@@ -3,7 +3,7 @@ from typing import Union
 from sqlalchemy.orm import Session
 
 from schemas.schemas import User, PIDMResolutionEvent, PIDMResolutionRecord
-from utils.auth import pwd_context
+from utils.auth import verify_password
 from .database import get_db
 from .models import PIDMREvent, MonitorRecord, Users
 
@@ -38,7 +38,7 @@ def save_pid_resolution_record(record: PIDMResolutionRecord):
 
 def authenticate_user(db: Session, username: str, password: str) -> Union[User, bool]:
     user = db.query(Users).filter(Users.username == username).first()
-    if user and pwd_context.verify(password, user.password_hash):
+    if user and verify_password(password, user.password_hash):
         return User(
             username=user.username,
             disabled=user.disabled,

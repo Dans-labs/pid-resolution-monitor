@@ -1,8 +1,7 @@
 from datetime import datetime, timedelta, timezone
 
+import bcrypt
 import jwt
-from fastapi.security import OAuth2PasswordBearer
-from passlib.context import CryptContext
 
 from settings import settings
 
@@ -10,16 +9,18 @@ SECRET_KEY = settings.JWT_SECRET_KEY
 ALGORITHM = "HS256"
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+def get_password_hash(password) -> str:
+    pwd_bytes = password.encode('utf-8')
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password=pwd_bytes, salt=salt)
+    return hashed_password.decode('utf-8')
 
 
-def verify_password(plain_password, password_hash):
-    return pwd_context.verify(plain_password, password_hash)
-
-
-def get_password_hash(password):
-    return pwd_context.hash(password)
+# Check if the provided password matches the stored password (hashed)
+def verify_password(plain_password, hashed_password) -> bool:
+    password_byte_enc = plain_password.encode('utf-8')
+    hashed_password_byte_enc = hashed_password.encode('utf-8')
+    return bcrypt.checkpw(password=password_byte_enc, hashed_password=hashed_password_byte_enc)
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):

@@ -4,7 +4,7 @@ from typing import Annotated
 import jwt
 from fastapi import APIRouter
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from jwt import InvalidTokenError
 from sqlalchemy.orm import Session
 
@@ -12,7 +12,9 @@ from database.crud import authenticate_user, get_user_by_username
 from database.database import get_db
 from schemas.schemas import User, Token, TokenData
 from settings import settings
-from utils.auth import create_access_token, oauth2_scheme, SECRET_KEY, ALGORITHM
+from utils.auth import create_access_token, SECRET_KEY, ALGORITHM
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 router = APIRouter(
     tags=["Users"],

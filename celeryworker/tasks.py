@@ -41,7 +41,7 @@ def resolve_pid_task(self, pid: str):
     try:
         print(f"Starting PID resolution TASK for: {pid} ({self.request.retries}/{self.max_retries})")
         resolution_record = pidresolver.resolve_url_by_pid(pid)
-        save_pid_resolution_record(record=resolution_record)  # TODO: Handle database errors
+        save_pid_resolution_record(record=resolution_record)
         return resolution_record
     except httpx.HTTPError as e:
         # print(f"PID {pid} resolution failed. retries: {self.request.retries}/{self.max_retries}, Error: {e}.")
