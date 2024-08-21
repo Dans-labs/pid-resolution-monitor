@@ -1,9 +1,6 @@
 from datetime import datetime
-
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
-
 from .database import Base
-
 
 class MonitorRecord(Base):
     __tablename__ = "pid_resolution"

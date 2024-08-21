@@ -11,7 +11,6 @@ def create_celery():
     celery_app.conf.update(task_serializer='json')
     celery_app.conf.update(result_serializer='pickle')
     celery_app.conf.update(accept_content=['json', 'pickle'])
-    # celery_app.conf.update(result_persistent=True) # defaults to False
     celery_app.conf.update(worker_send_task_events=False)
     celery_app.conf.update(worker_prefetch_multiplier=1)
     celery_app.conf.update(broker_connection_retry_on_startup=True)

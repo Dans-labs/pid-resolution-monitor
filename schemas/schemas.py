@@ -1,9 +1,7 @@
 from datetime import datetime
 from enum import StrEnum, unique, auto
 from typing import List
-
 from pydantic import ConfigDict, BaseModel
-
 
 @unique
 class PIDMODE(StrEnum):
