@@ -1,0 +1,21 @@
+# Misc
+CELERY_CONFIG=development
+BASE_DIR=/home/resolution
+
+# Container names
+RABBIT_CONTAINER_NAME=pidmr_rabbit
+POSTGRES_CONTAINER_NAME=pidmr_postgres
+FASTAPI_CONTAINER_NAME=pidmr_fastapi
+
+# Postgres settings
+POSTGRES_USER=pidresolution
+POSTGRES_PASSWORD=prm
+POSTGRES_DB=pidresolution
+
+# Rabbitmq settings
+RABBITMQ_DEFAULT_USER=guest
+RABBITMQ_DEFAULT_PASS=guest
+RABBITMQ_PORT=5672
+
+#JWT key
+JWT_SECRET_KEY=secret_key

@@ -1,15 +1,25 @@
 FROM python:3.12-slim
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ARG BASE_DIR
+ENV BASE_DIR=${BASE_DIR}
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-WORKDIR root
+RUN useradd -m resolution
+
+WORKDIR $BASE_DIR
+
 COPY pyproject.toml .
-RUN pip install poetry
-RUN poetry config virtualenvs.create false
-RUN poetry install
+RUN pip install poetry \
+    && poetry config virtualenvs.create false \
+    && poetry install
 
-WORKDIR src
+USER resolution
+
+RUN mkdir -p $BASE_DIR/logs \
+    && touch $BASE_DIR/logs/prm.log
+
+WORKDIR $BASE_DIR/app
 COPY . .
 
-ENTRYPOINT bash ./run.sh
+ENTRYPOINT ["bash", "./run.sh"]

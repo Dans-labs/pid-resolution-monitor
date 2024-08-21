@@ -1,0 +1,58 @@
+# Ignore the Dockerfile itself
+Dockerfile
+
+# Ignore Docker Compose files
+docker-compose.yml
+docker-compose.yaml
+docker-compose.override.yml
+
+# Node.js specific (if applicable)
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# Python specific (if applicable)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyd
+
+# Virtual environment directories (for Python)
+venv/
+.env/
+
+# Logs and temporary files
+*.log
+tmp/
+temp/
+*.swp
+
+# Git files and directories
+.git/
+.gitignore
+
+# IDE and editor directories
+.vscode/
+.idea/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Environment variables files
+.env
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# General patterns
+*.bak
+*.tmp
+*.cache
+
+#Poetry files
+poetry.lock
