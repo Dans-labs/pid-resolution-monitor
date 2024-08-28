@@ -29,6 +29,7 @@ services:
       dockerfile: Dockerfile
       args:
         BASE_DIR: ${BASE_DIR}
+        PORT: ${PORT}
     container_name: ${FASTAPI_CONTAINER_NAME}
     volumes:
       - .:/app
@@ -41,7 +42,7 @@ services:
       CELERY_CONFIG: ${CELERY_CONFIG}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
     ports:
-      - "9000:9000"
+      - ${PORT}:${PORT}
     networks:
       - app-network
 
