@@ -33,5 +33,5 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_ACCESS_PASSWORD }}
       - name: Push to dockerhub
         run: |
-          docker build . --file Dockerfile --tag dansknaw/pid-resolution-monitor:${{ env.version }}
-          docker push dansknaw/pid-resolution-monitor:${{ env.version }}
+          docker build . --file Dockerfile --tag dansknaw/pid-resolution-monitor:${{ env.version }} --build-arg BASE_DIR=/home/resolution
+          docker push dansknaw/pid-resolution-monitor:${{ env.version }} 
