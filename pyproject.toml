@@ -6,12 +6,6 @@ authors = ["wilkos-dans <wilko.steinhoff@dans.knaw.nl>"]
 readme = "README.md"
 package-mode = true
 packages = [{include = "pid_resolution_monitor", from = "src"}]
-#include = ["resources/*", "logs/*"]
-
-#python 3.12:
-#python -m ensurepip --upgrade
-#python -m pip install --upgrade setuptools
-#python -m pip install <module>
 
 [tool.poetry.dependencies]
 python = "^3.12"
