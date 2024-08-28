@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pid-resolution-monitor"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["wilkos-dans <wilko.steinhoff@dans.knaw.nl>"]
 readme = "README.md"
