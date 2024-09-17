@@ -44,6 +44,10 @@ Once the Flower starts we can see the submitted tasks at <http://localhost:5555/
 
 Visit http://localhost:9000/docs to see the API documentation provided by [Swagger UI](https://github.com/swagger-api/swagger-ui)
 
+### PID Resolver Resolution Client Properties
+- Default timeout of 30 seconds, meaning the request times out if a server does not respond within this time frame.
+- All methods are configured to follow a maximum of 20 redirects.
+- GET request that includes typical browsing parameters such as user agent and accepted cookies with HTTPX library
 
 ### References
 * [Async Architecture with FastAPI, Celery, and RabbitMQ ](https://dassum.medium.com/async-architecture-with-fastapi-celery-and-rabbitmq-c7d029030377)
@@ -52,3 +56,5 @@ Visit http://localhost:9000/docs to see the API documentation provided by [Swagg
 * https://flower.readthedocs.io/en/latest/
 * https://stackoverflow.com/questions/21233089/how-to-use-the-shared-task-decorator-for-class-based-tasks
 * http://ask.github.io/celery/userguide/groups.html#groups
+* Klein, M., Balakireva, L.: On the Persistence of Persistent Identifiers of the Scholarly Web. (2020), https://doi.org/10.48550/arXiv.2004.03011
+

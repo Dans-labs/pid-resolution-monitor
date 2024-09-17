@@ -1,5 +1,5 @@
 from datetime import datetime
-from enum import StrEnum, unique, auto
+from enum import StrEnum, unique
 from typing import List
 
 from pydantic import ConfigDict, BaseModel
@@ -19,6 +19,18 @@ class Pid(BaseModel):
             "pids": ["https://doi.org/10.15167/tomasi-federico_phd2019-03-14", "10.5281/zenodo.4672413"]
         }
     })
+
+
+class UptimeMonitorsRequest(BaseModel):
+    actor: str
+    identifier: str
+    institution: str
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "actor": "pid_graph:1A718108",
+            "identifier": "pid_graph:3E6F3EE6",
+            "institution": "pid_graph:258448F0"
+        }})
 
 
 class PIDMResolutionEvent(BaseModel):
@@ -80,5 +92,36 @@ class User(BaseModel):
             "username": "janedoe",
             "disabled": False,
             "timestamp": "2024-07-30 00:00:00"
+        }
+    })
+
+
+class Monitor(BaseModel):
+    id: int
+    pid_graph_id: str
+    friendly_name: str
+    url: str
+    uptime: str
+
+
+class UptimeResponse(BaseModel):
+    stat: str
+    mean_uptime: float
+    timestamp_interval: str
+    monitors: List[Monitor]
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "stat": "ok",
+            "mean_uptime": 99.9855,
+            "timestamp_interval": "1694931505_1726553905",
+            "monitors": [
+                {
+                    "id": 797637034,
+                    "pid_graph_id": "pid_graph:E2045F7A",
+                    "friendly_name": "arXiv",
+                    "url": "http://arXiv.org/openurl-resolver?id=oai%3AarXiv.org%3Acs.DL%2F0106057",
+                    "uptime": "99.971"
+                }
+            ]
         }
     })
