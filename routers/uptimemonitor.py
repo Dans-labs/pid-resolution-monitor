@@ -30,7 +30,7 @@ def get_uptime_by_actor_inst_id(input_data: UptimeMonitorsRequest):
     return json.loads(uptime_data)
 
 
-@router.get("/uptime", response_model=UptimeResponse, summary="Get mean uptime over the last year, for a list of Uptime Monitors", description="The Uptime Monitors are identified by their PID Graph IDs. Multiple monitors must be separated by a hyphen. E.g.: 'pid_graph:E2045F7A-pid_graph:456AFBF9-pid_graph:7E94CE2D'")
+@router.get("/uptime/{pidgraph_ids}", response_model=UptimeResponse, summary="Get mean uptime over the last year, for a list of Uptime Monitor ID's ('pid_graph:12345678')", description="The Uptime Monitors are identified by their PID Graph IDs. Multiple monitors must be separated by a hyphen. E.g.: 'pid_graph:E2045F7A-pid_graph:456AFBF9-pid_graph:7E94CE2D'")
 def get_uptime(pidgraph_ids: str):
     try:
         uptime_data = uptime_robot.get_monitors_uptime_by_pidgraph_ids(pidgraph_ids)
