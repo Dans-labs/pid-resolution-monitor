@@ -1,20 +1,23 @@
+from typing import Annotated
+
 from celery import group
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from starlette.responses import JSONResponse
 
 from api import pidresolver
 from celeryworker.tasks import resolve_all_pids_task, resolve_pid_task
 from celeryworker.utils import get_task_info
-from schemas.schemas import Pid
+from routers.users import get_current_enabled_user
+from schemas.schemas import Pid, User
 from settings import settings
 
-router = APIRouter(responses={404: {"description": "Not found"}}, tags=["PID Resolution"])
+router = APIRouter(responses={404: {"description": "Not found"}})
 
 MAX_CELERY_GROUP_SIZE = settings.CELERY_MAX_GROUP_SIZE
 
 
-@router.post("/pid/")
-def get_pid_status_codes(pid: Pid) -> dict:
+@router.post("/pid/", tags=["PID Resolution"])
+def get_pid_status_codes(pid: Pid, user: Annotated[User, Depends(get_current_enabled_user)]) -> dict:
     """
     Return the List of HTTP response codes in a sync way
     """
@@ -24,8 +27,8 @@ def get_pid_status_codes(pid: Pid) -> dict:
     return data
 
 
-@router.post("/pid/parallel")
-async def get_status_codes(pid: Pid) -> dict:
+@router.post("/pid/parallel", tags=["PID Resolution"])
+async def get_status_codes(pid: Pid, user: Annotated[User, Depends(get_current_enabled_user)]) -> dict:
     """
     This uses Celery to perform subtasks in a parallel manner. For each Celery canvas group it creates, it creates one task, that should be picked up by a worker.
     """
@@ -47,15 +50,15 @@ async def get_status_codes(pid: Pid) -> dict:
     return result
 
 
-@router.post("/pid/async")
-async def get_status_codes_async(pid: Pid):
+@router.post("/pid/async", tags=["PID Resolution"])
+async def get_status_codes_async(pid: Pid, user: Annotated[User, Depends(get_current_enabled_user)]):
     """Creates one task for all provided PIDs. It is picked up by only ONE worker..."""
     task_result = resolve_all_pids_task.apply_async(args=[pid.pids])
     return JSONResponse({"task_id": task_result.id})
 
 
 @router.get("/task/{task_id}", tags=["Celery"])
-async def get_task_status(task_id: str) -> dict:
+async def get_task_status(task_id: str, user: Annotated[User, Depends(get_current_enabled_user)]) -> dict:
     """
     Return the status of a Celery TaskId
     """
