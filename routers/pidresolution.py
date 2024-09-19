@@ -23,7 +23,7 @@ def get_pid_status_codes(pid: Pid, user: Annotated[User, Depends(get_current_ena
     """
     data: dict = {}
     for pid in pid.pids:
-        data.update(pidresolver.resolve_url_by_pid(pid))
+        data[pid] = pidresolver.resolve_url_by_pid(pid).status_code
     return data
 
 

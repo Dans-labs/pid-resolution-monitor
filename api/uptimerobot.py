@@ -1,6 +1,7 @@
 import datetime
 import dbm
 import json
+import os
 from typing import List
 
 import httpx
@@ -12,6 +13,8 @@ from settings import settings
 
 class UptimeRobot:
 
+    uptimerobot_api_key = os.getenv('UPTIMEROBOT_API_KEY')
+
     def update_monitors_mapping(self) -> int:
         httpx_client = httpx.Client(headers={"user-agent": settings.PIDRESOLVER_USER_AGENT,
                                              "Content-Type": "application/x-www-form-urlencoded"})
@@ -22,7 +25,7 @@ class UptimeRobot:
 
         with dbm.open(settings.uptime_monitors_mapping_db, 'c') as db:
             while new_results:
-                payload = f'api_key={settings.uptimerobot_api_key}&format=json&logs=0&offset={offset}&limit={limit}'
+                payload = f'api_key={self.uptimerobot_api_key}&format=json&logs=0&offset={offset}&limit={limit}'
                 logger.debug(payload)
                 response = httpx_client.post('https://api.uptimerobot.com/v2/getMonitors', data=payload)
                 data = response.json()
@@ -63,7 +66,7 @@ class UptimeRobot:
         days_in_last_year = (now - oneyearago).days
 
         time_range = f'{int(oneyearago.timestamp())}_{int(now.timestamp())}'
-        payload = f'api_key={settings.uptimerobot_api_key}&format=json&logs=0&monitors={"-".join(monitor_ids)}&custom_uptime_ranges={time_range}'
+        payload = f'api_key={self.uptimerobot_api_key}&format=json&logs=0&monitors={"-".join(monitor_ids)}&custom_uptime_ranges={time_range}'
         logger.debug(payload)
         response = httpx_client.post('https://api.uptimerobot.com/v2/getMonitors', data=payload)
         data = response.json()
@@ -107,27 +110,6 @@ if __name__ == "__main__":
         value = db[key]
         print(f'"{key.decode('utf-8')}" :  "{value.decode('utf-8')}"')
     db.close()
-
-    import base64
-    import json
-
-    # JWT token provided
-    jwt_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqYW5lZG9lIn0.wHFdXnRoHsQl2_y0LsUoNo0f3KtQeWgGtbNkT1Ou9-s"
-    jwt_token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqYW5lZG9lIiwiZXhwIjoxNzU4MTg2ODE5fQ.XDSy5n8jRhNQXanf3xhu24cJZ1pBiN5v2p8KOtFnPus"
-
-    # Split the JWT token into its components (header, payload, signature)
-    header_b64, payload_b64, signature_b64 = jwt_token.split('.')
-
-    # Base64 decode the header and payload
-    header_decoded = base64.urlsafe_b64decode(header_b64 + '==').decode('utf-8')
-    payload_decoded = base64.urlsafe_b64decode(payload_b64 + '==').decode('utf-8')
-
-    # Convert from JSON format to a dictionary
-    header_json = json.loads(header_decoded)
-    payload_json = json.loads(payload_decoded)
-
-    print(header_json)
-    print(payload_json)
 
 
         # jsonpath_expr = parse('$.mean_uptime')
