@@ -1,10 +1,9 @@
 import random
+import httpx
+
 from datetime import datetime, timedelta, timezone
 from typing import List
-
-import httpx
 from celery import shared_task, Task
-
 from api import pidresolver, pidmr
 from database.crud import save_pid_resolution_record
 from logging_config import prm_logger as logger
@@ -39,12 +38,11 @@ class BaseResolutionTask(Task):
              throws=(httpx.HTTPError,), max_retries=1)
 def resolve_pid_task(self, pid: str):
     try:
-        print(f"Starting PID resolution TASK for: {pid} ({self.request.retries}/{self.max_retries})")
+        logger.info(f"Starting PID resolution TASK for: {pid} ({self.request.retries}/{self.max_retries})")
         resolution_record = pidresolver.resolve_url_by_pid(pid)
         save_pid_resolution_record(record=resolution_record)
         return resolution_record
     except httpx.HTTPError as e:
-        # print(f"PID {pid} resolution failed. retries: {self.request.retries}/{self.max_retries}, Error: {e}.")
         logger.debug(f"PID {pid} resolution failed. retries: {self.request.retries}/{self.max_retries}, Error: {e}.")
         base_eta = datetime.now(timezone.utc) + timedelta(hours=24)
         jitter_seconds = random.randint(-3600, 3600)

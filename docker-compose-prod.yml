@@ -1,0 +1,69 @@
+# Work in progress
+# TODO: create conn string for postgrs and rabbit in app. That way the passwords for both can be handled as secrets.
+
+services:
+  rabbitmq:
+    container_name: ${RABBIT_CONTAINER_NAME}
+    image: rabbitmq:3.13-management
+    ports:
+      - ${RABBITMQ_PORT}:${RABBITMQ_PORT}   # RabbitMQ messaging port
+      - "15672:15672" # RabbitMQ management UI port
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres:16.4-alpine3.20
+    container_name: ${POSTGRES_CONTAINER_NAME}
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  fastapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BASE_DIR: ${BASE_DIR}
+    container_name: ${FASTAPI_CONTAINER_NAME}
+    volumes:
+      - .:/app
+    depends_on:
+      - rabbitmq
+      - postgres
+    environment:
+      CELERY_BROKER_URL: amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@${RABBIT_CONTAINER_NAME}:${RABBITMQ_PORT}//
+      POSTGRES_CONNECTION_STRING: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_CONTAINER_NAME}/${POSTGRES_DB}
+      CELERY_CONFIG: ${CELERY_CONFIG}
+      JWT_SECRET_KEY: /run/secrets/jwt_secret_key #${JWT_SECRET_KEY}
+    ports:
+      - "9000:9000"
+    networks:
+      - app-network
+    secrets:
+      - celery_broker_url
+      - postgres_connection_string
+      - jwt_secret_key
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  pgdata:
+    driver: local
+
+secrets:
+  jwt_secret_token:
+    file: $SECRETSDIR/jwt_secret_token
+  postgres_password:
+    file: $SECRETSDIR/postgres_password
+  rabbitmq_password:
+    file: $SECRETSDIR/rabbitmq_password

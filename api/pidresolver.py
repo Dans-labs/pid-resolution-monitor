@@ -1,14 +1,13 @@
-from datetime import datetime
-from typing import Optional
-
 import httpx
 import idutils
+
+from datetime import datetime
+from typing import Optional
 from pydantic import BaseModel
+from settings import settings
+from logging_config import prm_logger as logger
 from tenacity import retry, stop_after_attempt, retry_if_exception_type, wait_exponential_jitter, \
     RetryError
-
-from logging_config import prm_logger as logger
-from settings import settings
 
 
 class ResolutionRecord(BaseModel):
@@ -40,8 +39,8 @@ def resolve_url_by_pid(pid: str) -> Optional[ResolutionRecord]:
     if not pidx:
         return None
     try:
-        respons, verified, error = resolve_pid(pidx, True)
-        return create_resolution_record(pid, pidx, respons, verified, error)
+        response, verified, error = resolve_pid(pidx, True)
+        return create_resolution_record(pid, pidx, response, verified, error)
     except RetryError as e:
         raise e.last_attempt.exception()  # Tenacity back-off failed. Raise the last Exception, so that the task can be rescheduled.
 

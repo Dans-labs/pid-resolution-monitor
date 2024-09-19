@@ -1,11 +1,13 @@
+import os
+
 from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-from settings import settings
+postgres_connection_string = os.getenv('POSTGRES_CONNECTION_STRING')
 
-engine = create_engine(settings.POSTGRES_CONNECTION_STRING, echo=False, future=True, pool_recycle=3600, pool_size=5,
+engine = create_engine(postgres_connection_string, echo=False, future=True, pool_recycle=3600, pool_size=5,
                        max_overflow=10)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

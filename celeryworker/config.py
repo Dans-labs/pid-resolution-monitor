@@ -19,9 +19,6 @@ class BaseConfig:
     result_backend: str = os.environ.get("result_backend", "rpc://")
     task_ignore_result = True
 
-    # task_annotations = {'tasks.add': {'rate_limit': '10/s'}} # The task.add task only...
-    # task_annotations = {'*': {'rate_limit': '10/s'}}
-
     # These queues will all be created if the celey worker was not started with the -Q option:
     CELERY_TASK_QUEUES: list = (
         Queue("celery"),  # default queue

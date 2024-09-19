@@ -1,7 +1,6 @@
 import logging.config
 import sys
 from logging.handlers import RotatingFileHandler
-
 from settings import settings
 
 for log in settings.LOGGERS:
@@ -17,17 +16,3 @@ for log in settings.LOGGERS:
 
 pidmr_logger = logging.getLogger('pidmr')
 prm_logger = logging.getLogger('prm')
-
-# NOTSET=0
-# DEBUG=10
-# INFO=20
-# WARN=30
-# ERROR=40
-# CRITICAL=50
-
-#     logger.propagate = False
-#
-#     logging.getLogger("httpx").setLevel(logging.WARNING)
-#     logging.getLogger("httpcore").setLevel(logging.WARNING)
-#     logging.getLogger("watchfiles").setLevel(logging.WARNING)
-#     logging.getLogger('passlib').setLevel(logging.ERROR)
