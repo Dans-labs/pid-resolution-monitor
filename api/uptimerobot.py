@@ -12,9 +12,6 @@ from settings import settings
 
 class UptimeRobot:
 
-    def __init__(self):
-        self.settings = settings
-
     def update_monitors_mapping(self) -> int:
         httpx_client = httpx.Client(headers={"user-agent": settings.PIDRESOLVER_USER_AGENT,
                                              "Content-Type": "application/x-www-form-urlencoded"})
@@ -23,7 +20,7 @@ class UptimeRobot:
         new_results = True
         offset = 0
 
-        with dbm.open('uptimerobot', 'n') as db:
+        with dbm.open(settings.uptime_monitors_mapping_db, 'c') as db:
             while new_results:
                 payload = f'api_key={settings.uptimerobot_api_key}&format=json&logs=0&offset={offset}&limit={limit}'
                 logger.debug(payload)
@@ -42,11 +39,13 @@ class UptimeRobot:
                 new_results = total > offset
             httpx_client.close()
             logger.info(f"UptimeRobot monitors mapping updated. Total monitors: {total}")
-            return total
+            for k in db.keys():
+                logger.info(f'"{k.decode('utf-8')}" :  "{db[k].decode('utf-8')}"')
+        return total
 
     def get_monitors_uptime_by_pidgraph_ids(self, pidgraph_ids: str) -> str:
         monitor_ids = []
-        with dbm.open('uptimerobot', 'r') as db:
+        with dbm.open(settings.uptime_monitors_mapping_db, 'r') as db:
             for pidgraph_id in pidgraph_ids.split('-'):
                 try:
                     monitor_ids.append(db[pidgraph_id].decode('utf-8'))
@@ -61,6 +60,8 @@ class UptimeRobot:
 
         now = datetime.datetime.now()
         oneyearago = now - relativedelta(years=1)
+        days_in_last_year = (now - oneyearago).days
+
         time_range = f'{int(oneyearago.timestamp())}_{int(now.timestamp())}'
         payload = f'api_key={settings.uptimerobot_api_key}&format=json&logs=0&monitors={"-".join(monitor_ids)}&custom_uptime_ranges={time_range}'
         logger.debug(payload)
@@ -73,6 +74,7 @@ class UptimeRobot:
 
         uptime_ranges = [float(monitor['custom_uptime_ranges']) for monitor in data['monitors']]
         mean_uptime = sum(uptime_ranges) / len(uptime_ranges)
+        downtime_days = (1 - (mean_uptime / 100)) * days_in_last_year
 
         # Create response JSON:
         transformed_monitors = []
@@ -89,6 +91,7 @@ class UptimeRobot:
         transformed_data = {
             "stat": data["stat"],
             "mean_uptime": round(mean_uptime, 3),
+            "days_downtime": round(downtime_days, 4),
             "timestamp_interval": time_range,
             "monitors": transformed_monitors
         }
@@ -97,10 +100,36 @@ class UptimeRobot:
 
 if __name__ == "__main__":
     uptimerobo = UptimeRobot()
-    # uptimerobo.update_monitors_mapping()
+    uptimerobo.update_monitors_mapping()
 
-    with dbm.open('uptimerobot', 'r') as db:
-        print(db["pid_graph:E2045F7AX"].decode('utf-8'))
-        # uptime = uptimerobo.get_monitors_uptime(
-        #     [db["pid_graph:E2045F7A"].decode('utf-8'), db["pid_graph:456AFBF9"].decode('utf-8')])
-        # print(uptime)
+    db = dbm.open(settings.uptime_monitors_mapping_db, 'r')
+    for key in db.keys():
+        value = db[key]
+        print(f'"{key.decode('utf-8')}" :  "{value.decode('utf-8')}"')
+    db.close()
+
+    import base64
+    import json
+
+    # JWT token provided
+    jwt_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqYW5lZG9lIn0.wHFdXnRoHsQl2_y0LsUoNo0f3KtQeWgGtbNkT1Ou9-s"
+    jwt_token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqYW5lZG9lIiwiZXhwIjoxNzU4MTg2ODE5fQ.XDSy5n8jRhNQXanf3xhu24cJZ1pBiN5v2p8KOtFnPus"
+
+    # Split the JWT token into its components (header, payload, signature)
+    header_b64, payload_b64, signature_b64 = jwt_token.split('.')
+
+    # Base64 decode the header and payload
+    header_decoded = base64.urlsafe_b64decode(header_b64 + '==').decode('utf-8')
+    payload_decoded = base64.urlsafe_b64decode(payload_b64 + '==').decode('utf-8')
+
+    # Convert from JSON format to a dictionary
+    header_json = json.loads(header_decoded)
+    payload_json = json.loads(payload_decoded)
+
+    print(header_json)
+    print(payload_json)
+
+
+        # jsonpath_expr = parse('$.mean_uptime')
+        # # Find the mean_uptime
+        # mean_uptime = [match.value for match in jsonpath_expr.find(data)][0]

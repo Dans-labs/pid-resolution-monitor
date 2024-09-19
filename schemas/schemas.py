@@ -37,13 +37,15 @@ class PIDMResolutionEvent(BaseModel):
     pid_mode: PIDMODE
     pid_type: str
     pid_endpoint: str
+    provider_status_code: int
     model_config = ConfigDict(json_schema_extra={
         "example": {
             "time_stamp": "2022-01-01T00:00:00",
             "pid_id": "10.5281/zenodo.4672413",
             "pid_mode": PIDMODE.LANDINGPAGE.value,
             "pid_type": "doi",
-            "pid_endpoint": "https://doi.org/10.5281/zenodo.4672413"
+            "pid_endpoint": "https://doi.org/10.5281/zenodo.4672413",
+            "provider_status_code": 200
         }
     })
 
@@ -105,12 +107,14 @@ class Monitor(BaseModel):
 class UptimeResponse(BaseModel):
     stat: str
     mean_uptime: float
+    days_downtime: float
     timestamp_interval: str
     monitors: List[Monitor]
     model_config = ConfigDict(json_schema_extra={
         "example": {
             "stat": "ok",
             "mean_uptime": 99.9855,
+            "days_downtime": 0.0145,
             "timestamp_interval": "1694931505_1726553905",
             "monitors": [
                 {

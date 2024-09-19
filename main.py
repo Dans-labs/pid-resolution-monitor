@@ -26,7 +26,7 @@ async def lifespan(application: FastAPI):
 
 def create_app() -> FastAPI:
     current_app = FastAPI(title=settings.fastapi_title, description=settings.fastapi_description,
-                          version=settings.fastapi_version, lifespan=lifespan)
+                          version=settings.fastapi_version, lifespan=lifespan, swagger_ui_parameters={"defaultModelsExpandDepth": -1})
 
     origins = ["*"]
 

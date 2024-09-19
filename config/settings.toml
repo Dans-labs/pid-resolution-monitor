@@ -2,7 +2,7 @@
 
 dynaconf_env = "DEFAULT"
 fastapi_title = "PID Monitoring and Resolution"
-fastapi_description = "Rest API to register PIDMR resolution events."
+fastapi_description = "REST API to manage PID monitoring and resolution events."
 fastapi_version = "0.1.0"
 fastapi_summary = ""
 loggers = [{ "name" = "prm", "log_file" = "@format {env[BASE_DIR]}/logs/prm.log", "log_level" = 20, "log_format" = "%(asctime)s - %(name)s - %(levelname)s - %(message)s", "log_date_format" = "%Y-%m-%d %H:%M:%S" }, { "name" = "pidmr", "log_file" = "@format {env[BASE_DIR]}/logs/pidmr.log", "log_level" = 20, "log_format" = "%(asctime)s - %(name)s - %(levelname)s - %(message)s", "log_date_format" = "%Y-%m-%d %H:%M:%S" }]
@@ -18,6 +18,7 @@ pidresolver_read_timeout = 60
 celery_max_group_size = 8
 
 jwt_token_expire_days = 365
+uptime_monitors_mapping_db = "@format {env[BASE_DIR]}/data/uptimerobot_monitor_mapping"
 
 [development]
 dynaconf_env = "DEVELOPMENT"
