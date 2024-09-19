@@ -32,13 +32,11 @@ async def get_status_codes(pid: Pid, user: Annotated[User, Depends(get_current_e
     """
     This uses Celery to perform subtasks in a parallel manner. For each Celery canvas group it creates, it creates one task, that should be picked up by a worker.
     """
-    subpidlists = [pid.pids[i:i + MAX_CELERY_GROUP_SIZE] for i in range(0, len(pid.pids), MAX_CELERY_GROUP_SIZE)]
+    subpidlists = [pid.pids[i:i + MAX_CELERY_GROUP_SIZE]
+                   for i in range(0, len(pid.pids), MAX_CELERY_GROUP_SIZE)]
 
     for groupchunk in subpidlists:
-        tasks = []
-        for pit in groupchunk:
-            tasks.append(resolve_pid_task.s(pit))
-        # create a group to run in parralel for these tasks
+        tasks = [resolve_pid_task.s(pit) for pit in groupchunk]
         job = group(tasks)
         job.apply_async()
 

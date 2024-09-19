@@ -1,13 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-
 from database.crud import create_pidmr_event
 from database.database import get_db
 from logging_config import pidmr_logger as logger
 from routers.users import get_current_enabled_user
 from schemas.schemas import PIDMResolutionEvent, User
 from celeryworker.tasks import resolve_pid_task
-
 from typing import Annotated
 
 router = APIRouter(

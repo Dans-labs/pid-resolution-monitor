@@ -1,11 +1,10 @@
-from datetime import datetime, timedelta, timezone
-
+import os
 import bcrypt
 import jwt
 
-from settings import settings
+from datetime import datetime, timedelta, timezone
 
-SECRET_KEY = settings.JWT_SECRET_KEY
+SECRET_KEY = os.environ['JWT_SECRET_KEY']
 ALGORITHM = "HS256"
 
 
