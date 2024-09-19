@@ -15,13 +15,12 @@ uptime_robot = UptimeRobot()
 
 
 def _get_monitor_ids(input_data) -> str:
-    # TODO: Query the KB api for the related monitors.
+    # TODO: Query the KB api for the uptime monitors involved.
     return "pid_graph:E2045F7A-pid_graph:456AFBF9-pid_graph:7E94CE2D"
 
 
 @router.post("/uptime", response_model=UptimeResponse, summary="Get mean uptime over the last passed year.", description="The Knowledge Base API provides the related monitor 'stack' that will be queried, by 'Actor', 'Identifier' and 'Institution'")
 def get_uptime_by_actor_inst_id(input_data: UptimeMonitorsRequest):
-    print(input_data.actor)
     related_monitors = _get_monitor_ids(input_data)
     try:
         uptime_data = uptime_robot.get_monitors_uptime_by_pidgraph_ids(related_monitors)

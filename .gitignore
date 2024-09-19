@@ -127,3 +127,4 @@ dmypy.json
 # poetry, Dynaconf
 *.secrets.toml
 poetry.lock
+*.db
