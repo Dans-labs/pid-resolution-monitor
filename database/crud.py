@@ -24,6 +24,7 @@ def save_pid_resolution_record(record: PidResolutionRecord):
         pid_id=record.pid_id,
         pid_url=record.pid_url,
         status_code=record.status_code,
+        content_type=record.content_type,
         ssl_verified=record.ssl_verified,
         redirect_count=record.redirect_count,
         resolution_url=record.resolution_url,

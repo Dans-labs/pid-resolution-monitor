@@ -46,6 +46,7 @@ class PidResolutionRecord(BaseModel):
     pid_id: str
     pid_url: str
     status_code: int | None
+    content_type: str | None
     ssl_verified: bool
     redirect_count: int | None
     resolution_url: str | None
@@ -57,6 +58,7 @@ class PidResolutionRecord(BaseModel):
             "pid_id": "10.5281/zenodo.4672413",
             "pid_url": "https://doi.org/10.5281/zenodo.4672413",
             "status_code": 200,
+            "content_type": "text/html; charset=utf-8",
             "ssl_verified": True,
             "redirect_count": 4,
             "resolution_url": "https://iris.unige.it//handle/11567/941700",

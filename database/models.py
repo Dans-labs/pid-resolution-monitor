@@ -12,6 +12,7 @@ class MonitorRecord(Base):
     pid_id = Column(String, nullable=False)  # pid of the record
     pid_url = Column(String, nullable=False)  # actionable url of the pid
     status_code = Column(Integer, nullable=True)  # status codes or unresolved
+    content_type = Column(String, nullable=True)  # Content-Type from header, if resolved
     ssl_verified = Column(Boolean, nullable=False)  # True or False
     redirect_count = Column(Integer, nullable=True)  # number of redirects
     resolution_url = Column(String, nullable=True)  # resolved url

@@ -16,6 +16,7 @@ class ResolutionRecord(BaseModel):
     pid_id: str
     pid_url: str
     status_code: Optional[int]
+    content_type: Optional[str]
     ssl_verified: bool
     redirect_count: Optional[int]
     resolution_url: Optional[str]
@@ -56,6 +57,7 @@ def create_resolution_record(pid: str, pidx: str, response: Optional[httpx.Respo
         pid_id=pid,
         pid_url=pidx,
         status_code=response.status_code if response else None,
+        content_type=response.headers.get("Content-Type") if response else None,
         ssl_verified=verified,
         redirect_count=len(response.history) if response else None,
         resolution_url=str(response.url) if response else None,

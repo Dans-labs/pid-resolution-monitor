@@ -52,7 +52,7 @@ async def get_status_codes(pid: Pid) -> dict:
     return result
 
 
-@router.post("/pid/async", tags=[PID_RESOLUTION_TAG])
+@router.post("/pid/async", tags=[PID_RESOLUTION_TAG], include_in_schema=False)
 async def get_status_codes_async(pid: Pid):
     """Creates one task for all provided PIDs. It is picked up by only ONE worker..."""
     task_result = resolve_all_pids_task.apply_async(args=[pid.pids])
