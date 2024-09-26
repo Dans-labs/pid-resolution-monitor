@@ -10,7 +10,7 @@ from .models import PIDMREvent, MonitorRecord, Users
 def create_pidmr_event(db: Session, event: PIDMResolutionEvent):
     db_event = PIDMREvent(time_stamp=event.time_stamp, pid_id=event.pid_id, pid_mode=event.pid_mode,
                           pid_type=event.pid_type,
-                          pid_endpoint=event.pid_endpoint)
+                          pid_endpoint=event.pid_endpoint, pid_resolver_status=event.resolver_status_code)
     db.add(db_event)
     db.commit()
     db.refresh(db_event)

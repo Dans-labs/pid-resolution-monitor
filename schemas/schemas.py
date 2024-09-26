@@ -4,7 +4,7 @@ from typing import List
 from pydantic import ConfigDict, BaseModel
 
 @unique
-class PIDMODE(StrEnum):
+class PIDMR_MODE(StrEnum):
     LANDINGPAGE = "landingpage"
     METADATA = "metadata"
     RESOURCE = "resource"
@@ -34,18 +34,18 @@ class UptimeMonitorsRequest(BaseModel):
 class PIDMResolutionEvent(BaseModel):
     time_stamp: datetime
     pid_id: str
-    pid_mode: PIDMODE
+    pid_mode: PIDMR_MODE
     pid_type: str
     pid_endpoint: str
-    provider_status_code: int
+    resolver_status_code: int | None
     model_config = ConfigDict(json_schema_extra={
         "example": {
             "time_stamp": "2022-01-01T00:00:00",
             "pid_id": "10.5281/zenodo.4672413",
-            "pid_mode": PIDMODE.LANDINGPAGE.value,
+            "pid_mode": PIDMR_MODE.LANDINGPAGE.value,
             "pid_type": "doi",
             "pid_endpoint": "https://doi.org/10.5281/zenodo.4672413",
-            "provider_status_code": 200
+            "resolver_status_code": 200
         }
     })
 

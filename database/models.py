@@ -18,11 +18,12 @@ class MonitorRecord(Base):
 class PIDMREvent(Base):
     __tablename__ = "pidmr_events"
     id = Column(Integer, primary_key=True)
-    time_stamp = Column(DateTime, nullable=False, default=datetime.now)
+    time_stamp = Column(DateTime, nullable=False, default=datetime.now) # time of the PIDMR event
     pid_id = Column(String, nullable=False)
-    pid_mode = Column(String, nullable=False)  # landingpage, metadata or resource
+    pid_mode = Column(String, nullable=False)  # Either: landingpage, metadata or resource
     pid_type = Column(String, nullable=True)
     pid_endpoint = Column(String, nullable=False)
+    pid_resolver_status = Column(Integer, nullable=True)
 
 
 class Users(Base):
