@@ -1,6 +1,5 @@
-from schemas.schemas import PIDMResolutionEvent
+from schemas.schemas import PidMrResolutionEvent
 
 
-def save_pidmr_event(event: PIDMResolutionEvent) -> dict:
-    # TODO: implement
-    return {"Event": event.pid_id}
+def save_pidmr_event(event: PidMrResolutionEvent) -> dict:
+    pass

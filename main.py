@@ -18,8 +18,11 @@ from settings import settings
 async def lifespan(application: FastAPI):
     models.Base.metadata.create_all(bind=engine)
     print(f"{emoji.emojize(':high_voltage:')} Created DB metadata...")
-    api.uptimerobot.UptimeRobot().update_monitors_mapping()
-    print(f"{emoji.emojize(':high_voltage:')} Refreshed UptimeRobot mappings...")
+    try:
+        api.uptimerobot.UptimeRobot().update_monitors_mapping()
+        print(f"{emoji.emojize(':high_voltage:')} Refreshed UptimeRobot mappings...")
+    except Exception as e:
+        print(f"{emoji.emojize(':fire:')} {e}")
     yield  # before the yield, will be executed before the application starts
     print(f"{emoji.emojize(':bomb:')} Stopping DB connectionpool...")
 

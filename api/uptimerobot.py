@@ -27,8 +27,13 @@ class UptimeRobot:
             while new_results:
                 payload = f'api_key={self.uptimerobot_api_key}&format=json&logs=0&offset={offset}&limit={limit}'
                 logger.debug(payload)
-                response = httpx_client.post('https://api.uptimerobot.com/v2/getMonitors', data=payload)
-                data = response.json()
+                try:
+                    response = httpx_client.post(settings.UPTIMEROBOT_ENDPOINT, data=payload)
+                    data = response.json()
+                except Exception as e:
+                    logger.warn(f"Updating UptimeRobot monitors mapping failed: {e}")
+                    raise Exception(
+                        f"Updating UptimeRobot mappings failed! Check if endpoint ({settings.UPTIMEROBOT_ENDPOINT}) is reachable and try again.")
                 if data["stat"] == "fail":
                     raise Exception(data["error"]["message"])
                 total = data['pagination']['total']
@@ -68,7 +73,7 @@ class UptimeRobot:
         time_range = f'{int(oneyearago.timestamp())}_{int(now.timestamp())}'
         payload = f'api_key={self.uptimerobot_api_key}&format=json&logs=0&monitors={"-".join(monitor_ids)}&custom_uptime_ranges={time_range}'
         logger.debug(payload)
-        response = httpx_client.post('https://api.uptimerobot.com/v2/getMonitors', data=payload)
+        response = httpx_client.post(settings.UPTIMEROBOT_ENDPOINT, data=payload)
         data = response.json()
         httpx_client.close()
 

@@ -1,23 +1,23 @@
 from typing import Union
 
 from sqlalchemy.orm import Session
-from schemas.schemas import User, PIDMResolutionEvent, PIDMResolutionRecord
+from schemas.schemas import User, PidMrResolutionEvent, PidResolutionRecord
 from utils.auth import verify_password
 from .database import get_db
 from .models import PIDMREvent, MonitorRecord, Users
 
 
-def create_pidmr_event(db: Session, event: PIDMResolutionEvent):
+def create_pidmr_event(db: Session, event: PidMrResolutionEvent):
     db_event = PIDMREvent(time_stamp=event.time_stamp, pid_id=event.pid_id, pid_mode=event.pid_mode,
                           pid_type=event.pid_type,
-                          pid_endpoint=event.pid_endpoint, pid_resolver_status=event.resolver_status_code)
+                          pid_endpoint=event.pid_endpoint, pid_resolver_status=event.pid_resolver_status)
     db.add(db_event)
     db.commit()
     db.refresh(db_event)
     return db_event
 
 
-def save_pid_resolution_record(record: PIDMResolutionRecord):
+def save_pid_resolution_record(record: PidResolutionRecord):
     db_record = MonitorRecord(
         time_stamp=record.time_stamp,
         pid_id=record.pid_id,

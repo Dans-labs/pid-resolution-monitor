@@ -7,12 +7,12 @@ from celery import shared_task, Task
 from api import pidresolver, pidmr
 from database.crud import save_pid_resolution_record
 from logging_config import prm_logger as logger
-from schemas.schemas import PIDMResolutionEvent
+from schemas.schemas import PidMrResolutionEvent
 
 
 @shared_task(bind=True, autoretry_for=(Exception,), retry_backoff=True, retry_kwargs={"max_retries": 1},
              name='pidmr:save_pidmr_event_task', ignore_result=True)
-def save_pidmr_event_task(self, event: PIDMResolutionEvent):
+def save_pidmr_event_task(self, event: PidMrResolutionEvent):
     store_result = pidmr.save_pidmr_event(event)
     return store_result
 

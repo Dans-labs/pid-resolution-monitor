@@ -19,6 +19,7 @@ celery_max_group_size = 8
 
 jwt_token_expire_days = 365
 uptime_monitors_mapping_db = "@format {env[BASE_DIR]}/data/uptimerobot_monitor_mapping"
+uptimerobot_endpoint = 'https://api.uptimerobot.com/v2/getMonitors'
 
 [development]
 dynaconf_env = "DEVELOPMENT"
