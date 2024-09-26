@@ -1,13 +1,14 @@
-import httpx
-import idutils
-
 from datetime import datetime
 from typing import Optional
+
+import httpx
+import idutils
 from pydantic import BaseModel
-from settings import settings
-from logging_config import prm_logger as logger
 from tenacity import retry, stop_after_attempt, retry_if_exception_type, wait_exponential_jitter, \
     RetryError
+
+from logging_config import prm_logger as logger
+from settings import settings
 
 
 class ResolutionRecord(BaseModel):

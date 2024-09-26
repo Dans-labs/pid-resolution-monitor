@@ -1,9 +1,10 @@
 import random
-import httpx
-
 from datetime import datetime, timedelta, timezone
 from typing import List
+
+import httpx
 from celery import shared_task, Task
+
 from api import pidresolver, pidmr
 from database.crud import save_pid_resolution_record
 from logging_config import prm_logger as logger
@@ -30,7 +31,8 @@ class BaseResolutionTask(Task):
         logger.warn(f"'{args[0]}' unresolvable after {self.request.retries}/{self.max_retries} retries. Error: {exc}")
 
     def on_success(self, retval, task_id, args, kwargs):
-        logger.info(f'Task {task_id} succeeded: {retval.pid_url} => {retval.resolution_url} (HTTP {retval.status_code})')
+        logger.info(
+            f'Task {task_id} succeeded: {retval.pid_url} => {retval.resolution_url} (HTTP {retval.status_code})')
 
 
 @shared_task(bind=True, autoretry_for=(httpx.HTTPError,), name='pid-resolution:resolve_pid_task',

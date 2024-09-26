@@ -12,7 +12,6 @@ from settings import settings
 
 
 class UptimeRobot:
-
     uptimerobot_api_key = os.getenv('UPTIMEROBOT_API_KEY')
 
     def update_monitors_mapping(self) -> int:
@@ -116,7 +115,6 @@ if __name__ == "__main__":
         print(f'"{key.decode('utf-8')}" :  "{value.decode('utf-8')}"')
     db.close()
 
-
-        # jsonpath_expr = parse('$.mean_uptime')
-        # # Find the mean_uptime
-        # mean_uptime = [match.value for match in jsonpath_expr.find(data)][0]
+    # jsonpath_expr = parse('$.mean_uptime')
+    # # Find the mean_uptime
+    # mean_uptime = [match.value for match in jsonpath_expr.find(data)][0]

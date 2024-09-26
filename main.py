@@ -17,10 +17,10 @@ from settings import settings
 @asynccontextmanager
 async def lifespan(application: FastAPI):
     models.Base.metadata.create_all(bind=engine)
-    print(f"{emoji.emojize(':high_voltage:')} Created DB metadata...")
+    print(f"{emoji.emojize('⚡️')} Created DB metadata...")
     try:
         api.uptimerobot.UptimeRobot().update_monitors_mapping()
-        print(f"{emoji.emojize(':high_voltage:')} Refreshed UptimeRobot mappings...")
+        print(f"{emoji.emojize('⚡️')} Refreshed UptimeRobot mappings...")
     except Exception as e:
         print(f"{emoji.emojize(':fire:')} {e}")
     yield  # before the yield, will be executed before the application starts
@@ -29,7 +29,8 @@ async def lifespan(application: FastAPI):
 
 def create_app() -> FastAPI:
     current_app = FastAPI(title=settings.fastapi_title, description=settings.fastapi_description,
-                          version=settings.fastapi_version, lifespan=lifespan, swagger_ui_parameters={"defaultModelsExpandDepth": -1})
+                          version=settings.fastapi_version, lifespan=lifespan,
+                          swagger_ui_parameters={"defaultModelsExpandDepth": -1})
 
     origins = ["*"]
 

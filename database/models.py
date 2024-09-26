@@ -1,6 +1,9 @@
 from datetime import datetime
+
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
+
 from .database import Base
+
 
 class MonitorRecord(Base):
     __tablename__ = "pid_resolution"
@@ -18,7 +21,7 @@ class MonitorRecord(Base):
 class PIDMREvent(Base):
     __tablename__ = "pidmr_events"
     id = Column(Integer, primary_key=True)
-    time_stamp = Column(DateTime, nullable=False, default=datetime.now) # time of the PIDMR event
+    time_stamp = Column(DateTime, nullable=False, default=datetime.now)  # time of the PIDMR event
     pid_id = Column(String, nullable=False)
     pid_mode = Column(String, nullable=False)  # Either: landingpage, metadata or resource
     pid_type = Column(String, nullable=True)

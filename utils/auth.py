@@ -1,8 +1,8 @@
 import os
+from datetime import datetime, timedelta, timezone
+
 import bcrypt
 import jwt
-
-from datetime import datetime, timedelta, timezone
 
 SECRET_KEY = os.environ['JWT_SECRET_KEY']
 ALGORITHM = "HS256"
