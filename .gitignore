@@ -129,3 +129,4 @@ dmypy.json
 *.secrets.toml
 poetry.lock
 *.db
+/testing.py
