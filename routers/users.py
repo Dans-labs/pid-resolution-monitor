@@ -36,7 +36,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Se
         token_data = TokenData(username=username)
     except InvalidTokenError:
         raise credentials_exception
-    user = get_user_by_username(db=db, username=token_data.username)
+    user = get_user_by_username(username=token_data.username, db=db)
     if user is None:
         raise credentials_exception
     return user
@@ -48,10 +48,10 @@ async def get_current_enabled_user(current_user: Annotated[User, Depends(get_cur
     return current_user
 
 
-@router.post("/token")
+@router.post("/token", summary="Get a JWT token to authenticate.", response_model=Token)
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
                                  db: Session = Depends(get_db)) -> Token:
-    user = authenticate_user(db=db, username=form_data.username, password=form_data.password)
+    user = authenticate_user(username=form_data.username, password=form_data.password, db=db)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

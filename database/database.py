@@ -6,7 +6,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 postgres_connection_string = os.getenv('POSTGRES_CONNECTION_STRING')
-
 engine = create_engine(postgres_connection_string, echo=False, future=True, pool_recycle=3600, pool_size=5,
                        max_overflow=10)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

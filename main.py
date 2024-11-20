@@ -6,11 +6,12 @@ import uvicorn as uvicorn
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-import api.uptimerobot
+import api.uptime_monitors
 from celeryworker.utils import create_celery
 from database import models
+from database.crud import create_magic_pidmr_pidbatch
 from database.database import engine
-from routers import pidresolution, pidmr, users, uptimemonitor
+from routers import pidresolution, pidmr, users, uptimemonitor, mqueue
 from settings import settings
 
 
@@ -19,10 +20,11 @@ async def lifespan(application: FastAPI):
     models.Base.metadata.create_all(bind=engine)
     print(f"{emoji.emojize('⚡️')} Created DB metadata...")
     try:
-        api.uptimerobot.UptimeRobot().update_monitors_mapping()
-        print(f"{emoji.emojize('⚡️')} Refreshed UptimeRobot mappings...")
+        if api.uptime_monitors.UptimeRobot().update_monitors_mapping(force_update=False):
+            print(f"{emoji.emojize('⚡️')} Successfully refreshed UptimeRobot mappings...")
     except Exception as e:
         print(f"{emoji.emojize(':fire:')} {e}")
+    create_magic_pidmr_pidbatch()
     yield  # before the yield, will be executed before the application starts
     print(f"{emoji.emojize(':bomb:')} Stopping DB connectionpool...")
 
@@ -45,6 +47,7 @@ def create_app() -> FastAPI:
     current_app.include_router(pidresolution.router)
     current_app.include_router(pidmr.router)
     current_app.include_router(uptimemonitor.router)
+    current_app.include_router(mqueue.router)
     current_app.include_router(users.router)
     return current_app
 

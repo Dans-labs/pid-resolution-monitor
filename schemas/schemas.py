@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import datetime
 from enum import StrEnum, unique
 from typing import List
@@ -6,26 +7,34 @@ from pydantic import ConfigDict, BaseModel
 
 
 @unique
-class PIDMR_MODE(StrEnum):
+class PidmrMode(StrEnum):
     LANDINGPAGE = "landingpage"
     METADATA = "metadata"
     RESOURCE = "resource"
+
+
+@dataclass
+class UptimemonitorMapping:
+    pid_graph_id: str
+    local_id: str
+    monitor_name: str
 
 
 class Pid(BaseModel):
     pids: List[str]
     model_config = ConfigDict(json_schema_extra={
         "example": {
-            "pids": ["https://doi.org/10.15167/tomasi-federico_phd2019-03-14", "10.5281/zenodo.4672413"]
+            "pids": ["http://hdl.handle.net/10261/201090", "10.5281/zenodo.4672413",
+                     "https://hdl.handle.net/11245/1.132038"]
         }
     })
 
 
-class PidMrResolutionEvent(BaseModel):
+class PidMrEventRecord(BaseModel):
     id: int | None = None
     time_stamp: datetime
     pid_id: str
-    pid_mode: PIDMR_MODE
+    pid_mode: PidmrMode
     pid_type: str
     pid_endpoint: str
     pid_resolver_status: int | None
@@ -33,10 +42,108 @@ class PidMrResolutionEvent(BaseModel):
         "example": {
             "time_stamp": "2022-01-01T00:00:00",
             "pid_id": "10.5281/zenodo.4672413",
-            "pid_mode": PIDMR_MODE.LANDINGPAGE.value,
+            "pid_mode": PidmrMode.LANDINGPAGE.value,
             "pid_type": "doi",
             "pid_endpoint": "https://doi.org/10.5281/zenodo.4672413",
             "pid_resolver_status": 200
+        }
+    })
+
+
+class BatchPids(BaseModel):
+    batch_id: int
+    total_pids: int
+    offset: int
+    limit: int
+    pids: List[str]
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "batch_id": 1,
+            "total_pids": 50000,
+            "offset": 0,
+            "limit": 2,
+            "pids": ["http://hdl.handle.net/10261/201090", "10.5281/zenodo.4672413",
+                     "https://hdl.handle.net/11245/1.132038"]
+        }
+    })
+
+
+class PidBaseBatch(BaseModel):
+    batch_id: int
+    total_pids: int
+    identifier_type: str | None = None
+    actor: str
+    institution: str
+    description: str | None = None
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "batch_id": 1,
+            "total_pids": 2,
+            "identifier_type": "pid_graph:1A718108",
+            "actor": "pid_graph:3E6F3EE6",
+            "institution": "pid_graph:258448F0",
+            "description": "This sample batch checks the resolution of a PID."
+        }
+    })
+
+
+class PidUpdateBatch(BaseModel):
+    batch_id: int
+    pids_added: int
+    total_pids: int
+    identifier_type: str
+    actor: str
+    institution: str
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "batch_id": 1,
+            "pids_added": 1,
+            "total_pids": 2,
+            "identifier_type": "pid_graph:1A718108",
+            "actor": "pid_graph:3E6F3EE6",
+            "institution": "pid_graph:258448F0"
+        }
+    })
+
+
+class PidResolutionBaseBatch(BaseModel):
+    sample_pids: List[str]
+    identifier_type: str | None = None
+    actor: str
+    institution: str
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "sample_pids": ["http://hdl.handle.net/10261/201090", "10.5281/zenodo.4672413"],
+            "identifier_type": "pid_graph:1A718108",
+            "actor": "pid_graph:3E6F3EE6",
+            "institution": "pid_graph:258448F0"
+        }
+    })
+
+
+class PidResolutionUpdateBatch(PidResolutionBaseBatch):
+    id: int | None = None
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "id": 1,
+            "sample_pids": ["http://hdl.handle.net/10261/201090", "10.5281/zenodo.4672413"],
+            "identifier_type": "pid_graph:1A718108",
+            "actor": "pid_graph:3E6F3EE6",
+            "institution": "pid_graph:258448F0"
+        }
+    })
+
+
+class PidResolutionCreateBatch(PidResolutionBaseBatch):
+    id: int | None = None
+    description: str | None = None
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "sample_pids": ["https://hdl.handle.net/11245/1.132038", "10.5281/zenodo.4672413"],
+            "identifier_type": "pid_graph:1A718108",
+            "actor": "pid_graph:3E6F3EE6",
+            "institution": "pid_graph:258448F0",
+            "description": "This sample batch checks the resolution of a PID."
         }
     })
 
@@ -53,7 +160,6 @@ class PidResolutionRecord(BaseModel):
     http_error: str
     model_config = ConfigDict(json_schema_extra={
         "example": {
-            "id": 1,
             "time_stamp": "2022-01-01T00:00:00",
             "pid_id": "10.5281/zenodo.4672413",
             "pid_url": "https://doi.org/10.5281/zenodo.4672413",
@@ -79,12 +185,12 @@ class TokenData(BaseModel):
 class User(BaseModel):
     username: str
     disabled: bool | None = None
-    timestamp: datetime
+    time_stamp: datetime
     model_config = ConfigDict(json_schema_extra={
         "example": {
             "username": "janedoe",
             "disabled": False,
-            "timestamp": "2024-07-30 00:00:00"
+            "time_stamp": "2024-07-30 00:00:00"
         }
     })
 

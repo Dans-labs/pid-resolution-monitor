@@ -34,10 +34,10 @@ def get_actionable_pid_url(pid: str) -> Optional[str]:
     return pidx
 
 
-def resolve_url_by_pid(pid: str) -> Optional[ResolutionRecord]:
+def resolve_url_by_pid(pid: str, is_actionable: bool = False) -> Optional[ResolutionRecord]:
     """Resolves a persistent identifier (PID) in any form. Returns a (PID) ResolutionRecord object with the resolution results.
     :rtype: ResolutionRecord"""
-    pidx = get_actionable_pid_url(pid)
+    pidx = get_actionable_pid_url(pid) if not is_actionable else pid
     if not pidx:
         return None
     try:
