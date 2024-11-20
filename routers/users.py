@@ -48,7 +48,7 @@ async def get_current_enabled_user(current_user: Annotated[User, Depends(get_cur
     return current_user
 
 
-@router.post("/token", summary="Get a JWT token to authenticate.", response_model=Token)
+@router.post("/token", summary="Get a JWT token to authenticate.", response_model=Token, include_in_schema=False)
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
                                  db: Session = Depends(get_db)) -> Token:
     user = authenticate_user(username=form_data.username, password=form_data.password, db=db)
