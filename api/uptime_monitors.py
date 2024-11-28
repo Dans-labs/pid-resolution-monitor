@@ -82,7 +82,7 @@ class UptimeRobot(UptimeMonitor):
             logger.info(f"{self.name} monitor ({self.pid_graph_id}) mappings updated. Total monitors: {total}")
             update_uptimemonitor_mapping(mappings, self.pid_graph_id)
             for mapping in mappings:
-                logger.info(f'"{mapping.pid_graph_id}": "{mapping.local_id}"')
+                logger.info(f'"{mapping.monitor_name}" => "{mapping.pid_graph_id}" <=> "{mapping.local_id}"')
         return total
 
     def get_monitors_uptime_by_pidgraph_ids(self, pidgraph_ids: str) -> str:
@@ -90,6 +90,10 @@ class UptimeRobot(UptimeMonitor):
         return self.get_monitors_mean_uptime(monitor_ids)
 
     def get_monitors_mean_uptime(self, monitor_ids: List[str]) -> str:
+
+        if not monitor_ids:
+            return
+
         httpx_client = httpx.Client(headers={"user-agent": settings.PIDRESOLVER_USER_AGENT,
                                              "Content-Type": "application/x-www-form-urlencoded"})
 
@@ -127,6 +131,7 @@ class UptimeRobot(UptimeMonitor):
             "stat": data["stat"],
             "mean_uptime": round(mean_uptime, 3),
             "days_downtime": round(downtime_days, 4),
+            "hours_downtime": round(downtime_days*24, 3),
             "timestamp_interval": time_range,
             "monitors": transformed_monitors
         }

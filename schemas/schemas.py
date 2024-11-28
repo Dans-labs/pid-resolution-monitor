@@ -219,6 +219,7 @@ class UptimeResponse(BaseModel):
     stat: str
     mean_uptime: float
     days_downtime: float
+    hours_downtime: float
     timestamp_interval: str
     monitors: List[Monitor]
     model_config = ConfigDict(json_schema_extra={
@@ -226,6 +227,7 @@ class UptimeResponse(BaseModel):
             "stat": "ok",
             "mean_uptime": 99.9855,
             "days_downtime": 0.0145,
+            "hours_downtime": 0.348,
             "timestamp_interval": "1694931505_1726553905",
             "monitors": [
                 {
