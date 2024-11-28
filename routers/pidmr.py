@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from celeryworker.tasks import resolve_pidmr_task
-from database.crud import create_pidmr_event
+from database.crud import create_pidmr_event, get_pid_resolution_percentage_by_batch_id
 from database.database import get_db
 from database.models import PIDMREvent, MonitorRecord, PIDMRResolution
 from logging_config import pidmr_logger as logger
@@ -56,9 +56,11 @@ def get_pidmr_event_record(pidmr_event_id: int, db: Session = Depends(get_db)):
     return record
 
 
-# TODO: refactor
-@router.get("/resolution/{pidmr_event_id}", response_model=PidResolutionRecord,
-            summary="Get PID resolution results by PIDMR Event ID", dependencies=[Depends(get_current_enabled_user)])
+# TODO: refactor db stuff to crud.py
+@router.get("/resolution/{pidmr_event_id}",
+            response_model=PidResolutionRecord,
+            summary="Get PID resolution results by PIDMR Event ID",
+            dependencies=[Depends(get_current_enabled_user)])
 def get_pidmr_resolution_record(pidmr_event_id: int, db: Session = Depends(get_db)):
     """
     Gets the PidMResolutionRecord by pidmr_event_id.
@@ -83,6 +85,20 @@ def get_pidmr_resolution_record(pidmr_event_id: int, db: Session = Depends(get_d
 
     )
     return pid_resolution_record
+
+
+@router.get("/resolution",
+            response_model=dict,
+            summary="Get PID resolution percentage over all registered PIDMR Events.",
+            dependencies=[Depends(get_current_enabled_user)])
+def get_pidmr_resolution_percentage(db: Session = Depends(get_db)):
+    """
+    Test 35 (pid_graph:E54B2EEA): "Resolution Percentage"
+    The test involves determining the percentage f of resolved PIDs that result in a viable entity, compared to a community expectation p.
+    """
+    resolution_percentage = get_pid_resolution_percentage_by_batch_id(1, db)
+    return resolution_percentage
+
 
 # @router.get("/pid/{pid_resolution_id}", response_model=PidResolutionRecord,
 #             summary="Get the PID Resolution results by PIDMR Event ID")

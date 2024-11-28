@@ -152,6 +152,15 @@ def update_pid_resolution_batch(update_batch: PidResolutionUpdateBatch, db: Sess
     return added_pids
 
 
+def get_pid_resolution_percentage_by_batch_id(batch_id: int, db: Session) -> dict:
+    total_pids = db.query(MonitorRecord).filter(MonitorRecord.batch_id == batch_id).count()
+    resolved_pids = db.query(MonitorRecord).filter(MonitorRecord.batch_id == batch_id, MonitorRecord.status_code == 200).count()
+    if total_pids == 0:
+        return {"resolution_percentage": 0.0, "total_pids": total_pids}
+    return {"resolution_percentage": round((resolved_pids / total_pids) * 100, 1), "total_pids": total_pids}
+# return {"resolution_percentage": f"{round((resolved_pids / total_pids) * 100, 1):.1f}", "total_pids": total_pids}
+
+
 def update_uptimemonitor_mapping(mapping: List[UptimemonitorMapping], provider_pgid: str) -> int:
     db = next(get_db())
     for map in mapping:
