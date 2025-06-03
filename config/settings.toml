@@ -18,8 +18,14 @@ pidresolver_read_timeout = 60
 celery_max_group_size = 8
 
 jwt_token_expire_days = 365
-uptimerobot_endpoint = 'https://api.uptimerobot.com/v2/getMonitors'
+
 uptimemonitor_max_stale_hours = 24
+
+uptimerobot_endpoint = 'https://api.uptimerobot.com/v2/getMonitors'
+uptimerobot_api = 'https://uptimerobot.com/api/'
+
+agro_endpoint = 'https://api.devel.mon.argo.grnet.gr/api/v2/topology/endpoints'
+agro_api = 'https://argoeu.github.io/argo-web-api/openapi/explore'
 
 [development]
 dynaconf_env = "DEVELOPMENT"

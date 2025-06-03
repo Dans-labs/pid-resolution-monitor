@@ -171,11 +171,11 @@ def update_uptimemonitor_mapping(mapping: List[UptimemonitorMapping], provider_p
             provider_pgid=provider_pgid,
             last_updated=datetime.now()
         ).on_conflict_do_update(
-            index_elements=['monitor_pgid'],
+            index_elements=['monitor_pgid', 'monitor_id', 'provider_pgid'],
             set_={
-                'monitor_id': map.local_id,
+                # 'monitor_id': map.local_id,
                 'monitor_name': map.monitor_name,
-                'provider_pgid': provider_pgid,
+                # 'provider_pgid': provider_pgid,
                 'last_updated': datetime.now()
             }
         )
@@ -214,19 +214,20 @@ def create_magic_pidmr_pidbatch() -> bool:
         db.add(pidmr_batch)
         db.commit()
         bln_success = True
-        logger.info("Dedicated PIDMR batch number 1 CREATED.")
+        logger.info("Magic Dedicated PIDMR batch number 1 CREATED.")
     except Exception as e:
-        logger.info("Dedicated PIDMR batch number 1 EXISTS.")
+        logger.info("Magic Dedicated PIDMR batch number 1 EXISTS.")
 
     return bln_success
 
 
-def get_monitor_ids_by_pgid_list(pgid_list: List[str]) -> List[str]:
+def get_monitor_ids_by_pgid_list(pgid_list: List[str], mon_pid_graph_id: str) -> List[str]:
     db = next(get_db())
-    result = db.query(UptimemonitorsMapping.monitor_id).filter(
-        UptimemonitorsMapping.monitor_pgid.in_(pgid_list)
+    result = db.query(UptimemonitorsMapping.monitor_id, UptimemonitorsMapping.monitor_pgid).filter(
+        UptimemonitorsMapping.monitor_pgid.in_(pgid_list),
+        UptimemonitorsMapping.provider_pgid == mon_pid_graph_id
     ).all()
-    return [row.monitor_id for row in result]
+    return [(row.monitor_id, row.monitor_pgid) for row in result]
 
 
 def authenticate_user(username: str, password: str, db: Session) -> Union[User, bool]:

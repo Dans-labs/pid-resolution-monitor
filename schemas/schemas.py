@@ -196,7 +196,7 @@ class User(BaseModel):
 
 
 class Monitor(BaseModel):
-    id: int
+    id: str
     pid_graph_id: str
     friendly_name: str
     url: str
@@ -217,6 +217,7 @@ class UptimeMonitorsRequest(BaseModel):
 
 class UptimeResponse(BaseModel):
     stat: str
+    provider_name : str
     mean_uptime: float
     days_downtime: float
     hours_downtime: float
@@ -225,13 +226,14 @@ class UptimeResponse(BaseModel):
     model_config = ConfigDict(json_schema_extra={
         "example": {
             "stat": "ok",
+            "provider_name": "ARGO",
             "mean_uptime": 99.9855,
             "days_downtime": 0.0145,
             "hours_downtime": 0.348,
             "timestamp_interval": "1694931505_1726553905",
             "monitors": [
                 {
-                    "id": 797637034,
+                    "id": "797637034",
                     "pid_graph_id": "pid_graph:E2045F7A",
                     "friendly_name": "arXiv",
                     "url": "http://arXiv.org/openurl-resolver?id=oai%3AarXiv.org%3Acs.DL%2F0106057",

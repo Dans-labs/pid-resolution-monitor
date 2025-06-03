@@ -6,7 +6,7 @@ import uvicorn as uvicorn
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-import api.uptime_monitors
+from api.uptime_monitor_providers import update_all_monitor_providers_mapping
 from celeryworker.utils import create_celery
 from database import models
 from database.crud import create_magic_pidmr_pidbatch
@@ -20,8 +20,8 @@ async def lifespan(application: FastAPI):
     models.Base.metadata.create_all(bind=engine)
     print(f"{emoji.emojize('⚡️')} Created DB metadata...")
     try:
-        if api.uptime_monitors.UptimeRobot().update_monitors_mapping(force_update=False):
-            print(f"{emoji.emojize('⚡️')} Successfully refreshed UptimeRobot mappings...")
+        update_all_monitor_providers_mapping(force_update=False)
+        print(f"{emoji.emojize(':rocket:')} Updated all monitor providers mapping...")
     except Exception as e:
         print(f"{emoji.emojize(':fire:')} {e}")
     create_magic_pidmr_pidbatch()

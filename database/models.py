@@ -1,6 +1,7 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, UniqueConstraint, ForeignKey, Sequence
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, UniqueConstraint, ForeignKey, Sequence, \
+    PrimaryKeyConstraint
 
 from .database import Base
 
@@ -70,8 +71,11 @@ class PIDMRResolution(Base):
 
 class UptimemonitorsMapping(Base):
     __tablename__ = "uptimemonitors_mapping"
-    monitor_pgid = Column(String, primary_key=True)
+    monitor_pgid = Column(String, nullable=False)
     monitor_id = Column(String, nullable=False)
     monitor_name = Column(String, nullable=False)
     provider_pgid = Column(String, nullable=False)  # provider pid_graph id. ie. pid_graph:3E6F3EE6 for UptimeRobot.
     last_updated = Column(DateTime, nullable=False, default=datetime.now)
+    __table_args__ = (
+        PrimaryKeyConstraint('monitor_pgid', 'monitor_id', 'provider_pgid', name='pk_uptimemonitors_mapping'),
+    )

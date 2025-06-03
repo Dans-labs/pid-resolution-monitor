@@ -30,6 +30,7 @@ bcrypt = "^4.2.0"
 flask = "^3.0.3"
 python-multipart = "^0.0.16"
 importlib_metadata = "^6.0.0"
+jmespath = "^1.0.1"
 
 [build-system]
 requires = ["poetry-core"]
